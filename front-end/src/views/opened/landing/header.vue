@@ -14,13 +14,6 @@
         >
           Contact
         </a>
-        <a
-           @click="showLoginModal=true"
-          class="relative inline-flex items-center justify-center px-6 py-2 overflow-hidden font-semibold text-white transition-all duration-300 bg-indigo-500 rounded-xl shadow-lg group hover:bg-indigo-600"
-        >
-          <span class="absolute inset-0 w-full h-full transition-all scale-0 group-hover:scale-100 group-hover:bg-indigo-700 opacity-30 rounded-xl"></span>
-          <span class="relative z-10">Login</span>
-        </a>
       </div>
     </div>
   </header>

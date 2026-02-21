@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from '../views/opened/landing/Home.vue'
+import Subscription from '../views/opened/landing/AlphaPMS.vue'
+import Festival from '../views/opened/landing/Festival.vue'
+import Remitance from   '../views/opened/landing/Remitance.vue'
 import Login from '../views/opened/auth/login.vue'
 import ResetPassword from '../views/opened/auth/ResetPassword.vue'
 import ForgotPasssword from '../views/opened/auth/forgotPassword.vue'
@@ -24,6 +27,28 @@ const routes = [
       { requiresGuest: true }
   },
 
+   {
+    path: "/subs", name: "subs",
+    component: Subscription,
+    meta:
+      { requiresGuest: true }
+  },
+
+
+    {
+    path: "/festival", name: "Festival",
+    component: Festival,
+    meta:
+      { requiresGuest: true }
+     },
+
+
+      {
+    path: "/remitance", name: "remitance",
+    component: Remitance,
+    meta:
+      { requiresGuest: true }
+     },
   {
     path: "/register", name: "register",
     component: Registration,

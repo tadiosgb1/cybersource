@@ -1,260 +1,177 @@
 <template>
-  <div class="min-h-screen bg-slate-50 font-sans selection:bg-primary/30">
-    <section>
-      <header class="bg-primary sticky top-0 z-50 border-b border-white/10 shadow-lg backdrop-blur-md bg-opacity-95 transition-all duration-500">
-        <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          
-          <div class="flex items-center space-x-3 group cursor-pointer">
-            <div class="h-11 w-11 bg-white rounded-xl flex items-center justify-center shadow-inner transform group-hover:rotate-12 transition-transform duration-300">
-              <img src="@/assets/img/logo1.jpg" alt="Alpha PMS" class="w-9 h-9 rounded-lg" />
-            </div>
-            <div class="flex flex-col">
-              <span class="text-xl font-black text-white tracking-tighter leading-none">ALPHA</span>
-              <span class="text-[10px] font-bold text-white/70 uppercase tracking-[0.2em] leading-none mt-1">Property Suite</span>
-            </div>
+  <div class="min-h-screen bg-[#F8FAFC] font-sans selection:bg-primary/30">
+    <header class="bg-[#1e293b] sticky top-0 z-50 border-b border-white/10 shadow-xl">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="h-12 w-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
+             <div class="text-[#eab308] font-black text-2xl">W</div>
           </div>
-
-          <nav class="hidden md:flex items-center space-x-8 text-white/90 text-sm font-bold uppercase tracking-widest">
-            <a href="#home" class="hover:text-white transition relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full">Home</a>
-            <a href="#features" class="hover:text-white transition relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full">Features</a>
-            <a href="#plans" class="hover:text-white transition relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full">Pricing</a>
-            <a href="#contact" class="hover:text-white transition relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full">Contact</a>
-          </nav>
-
-          <div class="hidden md:flex items-center space-x-4">
-            <div class="relative">
-              <select
-                v-model="selectedLang"
-                class="appearance-none cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs font-black uppercase tracking-widest px-4 py-2 pr-8 rounded-xl border border-white/20 focus:outline-none transition-all"
-              >
-                <option value="en" class="text-slate-800">EN</option>
-                <option value="am" class="text-slate-800">AM</option>
-                <option value="ti" class="text-slate-800">TI</option>
-              </select>
-              <i class="fas fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-white/50 text-[10px] pointer-events-none"></i>
-            </div>
-
-            <button
-              @click="showLoginModal = true"
-              class="flex items-center gap-2 px-6 py-2.5 font-black text-xs uppercase tracking-widest text-white bg-secondary rounded-xl shadow-lg shadow-secondary/30 hover:bg-opacity-90 active:scale-95 transition-all duration-300"
-            >
-              <i class="fas fa-lock"></i> Client Portal
-            </button>
+          <div class="flex flex-col">
+            <span class="text-xl font-black text-white tracking-tight">WEGAGEN <span class="text-[#eab308]">IMPACT</span></span>
+            <span class="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">Official Philanthropy Portal</span>
           </div>
-
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-white text-2xl">
-            <i class="fas" :class="mobileMenuOpen ? 'fa-times' : 'fa-bars-staggered'"></i>
-          </button>
         </div>
-
-        <transition name="menu-slide">
-          <div v-if="mobileMenuOpen" class="md:hidden bg-dprimary border-t border-white/10 px-6 py-8 space-y-6">
-            <nav class="flex flex-col space-y-4 text-white font-bold uppercase tracking-widest text-sm">
-              <a href="#home" @click="mobileMenuOpen=false">Home</a>
-              <a href="#features" @click="mobileMenuOpen=false">Features</a>
-              <a href="#plans" @click="mobileMenuOpen=false">Pricing</a>
-              <a href="#contact" @click="mobileMenuOpen=false">Contact</a>
-            </nav>
-            <button @click="showLoginModal = true" class="w-full bg-white text-primary font-black py-4 rounded-2xl shadow-xl">
-              PORTAL LOGIN
-            </button>
-          </div>
-        </transition>
-      </header>
-    </section>
-
-    <Hero @openLogin="showLoginModal=true" />
-    
-    <div class="bg-white py-10">
-      <Features />
-    </div>
-
-    <PropertiesSection />
-    
-    <Plans id="plans" />
-
-    <section v-if="showForm" class="max-w-4xl mx-auto my-20 px-8 py-12 bg-white rounded-[2rem] shadow-2xl border border-slate-100 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full"></div>
-      
-      <div class="relative z-10">
-        <h3 class="text-3xl font-black mb-2 text-slate-800 tracking-tight">Onboard your Property</h3>
-        <p class="text-slate-500 mb-8 font-medium">Complete the form below to initialize your PMS instance.</p>
         
-        <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div class="space-y-1">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">First Name</label>
-            <input v-model="form.first_name" type="text" placeholder="John" class="custom-input" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Last Name</label>
-            <input v-model="form.last_name" type="text" placeholder="Doe" class="custom-input" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Business Email</label>
-            <input v-model="form.email" type="email" placeholder="john@company.com" class="custom-input" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Mobile Number</label>
-            <input v-model="form.phone_number" type="text" placeholder="+251..." class="custom-input" />
-          </div>
-          <div class="col-span-full space-y-1">
-            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Secure Password</label>
-            <input v-model="form.password" type="password" placeholder="••••••••" class="custom-input" />
-          </div>
+        <nav class="hidden md:flex items-center space-x-8 text-white/80 text-xs font-black uppercase tracking-widest">
+          <a href="#" class="hover:text-[#eab308] transition">Partner NGOs</a>
+          <a href="#" class="hover:text-[#eab308] transition">Transparency Report</a>
+          <button class="bg-[#eab308] text-[#1e293b] px-6 py-2.5 rounded-full hover:scale-105 transition-transform">Bank Login</button>
+        </nav>
+      </div>
+    </header>
 
-          <div class="col-span-full pt-4">
-            <button class="w-full bg-primary hover:bg-dprimary text-white py-5 rounded-2xl text-sm font-black uppercase tracking-[0.2em] shadow-xl shadow-primary/20 transition-all active:scale-[0.98]" type="submit">
-              Initialize Subscription
-            </button>
-          </div>
-        </form>
+    <section class="bg-[#1e293b] text-white pt-12 pb-24 px-6 text-center relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-[#eab308] rounded-full blur-[120px]"></div>
+      </div>
+      
+      <div class="relative z-10 max-w-4xl mx-auto">
+        <h1 class="text-5xl font-black mb-6 leading-tight">Empower Change Across Ethiopia</h1>
+        <p class="text-slate-400 text-lg mb-10">Securely donate to verified local organizations. Every cent is tracked and processed via Wegagen Bank's secure gateway.</p>
+        
+        <div class="max-w-2xl mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 flex">
+          <input type="text" placeholder="Search for a cause (e.g. Education, Health)..." class="flex-grow bg-transparent px-6 text-white outline-none placeholder:text-white/40" />
+          <button class="bg-[#eab308] text-black px-8 py-3 rounded-xl font-bold">Search</button>
+        </div>
       </div>
     </section>
 
-    <Fqs />
-    <ContactUs />
-    <Footer />
-    
-    <LoginModal :visible="showLoginModal" @close="showLoginModal = false" />
+    <section class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div v-for="merchant in merchants" :key="merchant.id" 
+             class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all group">
+          <div class="h-48 overflow-hidden relative">
+            <img :src="merchant.image" :alt="merchant.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-primary">
+              {{ merchant.category }}
+            </div>
+          </div>
+          
+          <div class="p-8">
+            <h3 class="text-2xl font-black text-slate-800 mb-2">{{ merchant.name }}</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-6 h-12 overflow-hidden">{{ merchant.description }}</p>
+            
+            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified by</span>
+                <span class="text-xs font-bold text-slate-700">Wegagen Compliance</span>
+              </div>
+              <button @click="openDonationModal(merchant)" 
+                      class="bg-primary hover:bg-dprimary text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-95">
+                Donate Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <transition name="fade">
+      <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" @click="showModal = false"></div>
+        
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div class="bg-slate-900 p-8 text-white flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-bold">Secure Donation</h3>
+              <p class="text-slate-400 text-[10px] uppercase tracking-widest mt-1">To: {{ selectedMerchant.name }}</p>
+            </div>
+            <i class="fas fa-shield-check text-[#eab308] text-3xl"></i>
+          </div>
+
+          <div class="p-10">
+            <div class="space-y-6">
+              <div class="grid grid-cols-3 gap-3">
+                <button v-for="amt in [200, 500, 1000]" :key="amt" 
+                        @click="donationAmount = amt"
+                        :class="donationAmount === amt ? 'bg-primary text-white shadow-lg' : 'bg-slate-50 text-slate-500'"
+                        class="py-3 rounded-xl font-bold transition-all border border-slate-100">
+                  {{ amt }}
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Card Holder</label>
+                  <input type="text" placeholder="Name on card" class="custom-input" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Card Details</label>
+                  <div id="card-number-field" class="custom-input h-[52px] flex items-center text-slate-400 italic">
+                    <i class="far fa-credit-card mr-2"></i> Encrypted Secure Field
+                  </div>
+                </div>
+              </div>
+
+              <button class="w-full bg-[#eab308] text-black py-5 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-[#d4a007] transition-all shadow-xl shadow-yellow-500/10">
+                Confirm {{ donationAmount }} ETB Donation
+              </button>
+              
+              <div class="flex items-center justify-center space-x-4 opacity-40 grayscale">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-4" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-6" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <footer class="bg-white py-20 mt-20 border-t border-slate-100">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-slate-400 text-sm font-medium">© 2026 Wegagen Bank S.C. All Rights Reserved.</p>
+        <p class="text-slate-300 text-xs mt-2 uppercase tracking-widest">Licensed by National Bank of Ethiopia</p>
+      </div>
+    </footer>
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      showModal: false,
+      selectedMerchant: {},
+      donationAmount: 500,
+      merchants: [
+        {
+          id: 'ngo_001',
+          name: 'Green Ethiopia',
+          category: 'Environment',
+          description: 'Reforestation and sustainable farming initiatives in the northern highlands.',
+          image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=400'
+        },
+        {
+          id: 'ngo_002',
+          name: 'Hope Education',
+          category: 'Education',
+          description: 'Providing textbooks and digital learning tools to rural primary schools.',
+          image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=400'
+        },
+        {
+          id: 'ngo_003',
+          name: 'Clean Water Initiative',
+          category: 'Health',
+          description: 'Constructing solar-powered water wells in drought-affected regions.',
+          image: 'https://images.unsplash.com/photo-1541544741938-0af808891447?auto=format&fit=crop&q=80&w=400'
+        }
+      ]
+    }
+  },
+  methods: {
+    openDonationModal(merchant) {
+      this.selectedMerchant = merchant;
+      this.showModal = true;
+    }
+  }
+}
+</script>
+
 <style scoped>
-/* Modern Input Styling using Dynamic Colors */
 .custom-input {
   @apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-700 
          transition-all outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-300;
 }
-
-/* Smooth Menu Transition */
-.menu-slide-enter-active, .menu-slide-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.menu-slide-enter-from, .menu-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-/* Custom Selection Color */
-::selection {
-  background: var(--color-primary);
-  color: white;
-}
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
-<script>
-
-
-import Fqs from './fqs.vue'
-import Footer from './footer.vue'
-import Header from './header.vue'
-import Plans from "./plans.vue"
-import LoginModal from '../auth/login.vue'
-import Hero from './hero.vue'
-import Features from './features.vue'
-import ContactUs from './contactUs.vue'
-import PropertiesSection from './PropertiesSection.vue'
-export default {
-  components:{
-    Plans,
-    Footer,
-    Header,
-    Fqs,
-    LoginModal,
-    Hero,
-    Features,
-    ContactUs,
-    PropertiesSection
-  },
-  data() {
-    return {
-      showLoginModal: false,
-       selectedLang: "en",
-      mobileMenuOpen: false,
-      plans: [
-        {
-          id: 'basic001',
-          name: 'Basic Plan',
-          max_locations: 2,
-          max_staff: 5,
-          max_users: 10,
-          max_kds: 1,
-          kds_enabled: true,
-          price: 199,
-          billing_cycle: 'monthly'
-        },
-        {
-          id: 'pro002',
-          name: 'Pro Plan',
-          max_locations: 10,
-          max_staff: 25,
-          max_users: 50,
-          max_kds: 5,
-          kds_enabled: true,
-          price: 499,
-          billing_cycle: 'monthly'
-        },
-        {
-          id: 'enterprise003',
-          name: 'Enterprise Plan',
-          max_locations: 100,
-          max_staff: 200,
-          max_users: 500,
-          max_kds: 50,
-          kds_enabled: true,
-          price: 1499,
-          billing_cycle: 'monthly'
-        }
-      ],
-      selectedPlan: null,
-      showForm: false,
-      form: {
-        email: '',
-        password: '',
-        phone_number: '',
-        first_name: '',
-        middle_name: '',
-        last_name: ''
-      }
-    };
-  },
-  methods: {
-    selectPlan(planId) {
-      this.selectedPlan = planId;
-      this.showForm = true;
-    },
-    async submitForm() {
-      if (!this.selectedPlan) return alert('Please select a plan.');
-      const payload = { ...this.form, plan: this.selectedPlan };
-
-      try {
-        const res = await fetch('https://your-api.com/api/sign_up', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert('Registration successful!');
-        } else {
-          alert(data.error || 'Failed to register');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Something went wrong.');
-      }
-    },
-    controlLogin(status){
-      this.showLoginModal=status
-    },
-    goToLogin() {
-      this.$router.push('/login');
-    },
-    goToRegister() {
-      const el = document.getElementById('plans');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-};
-</script>
-
-
