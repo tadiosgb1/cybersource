@@ -1,5 +1,0 @@
-<template>
-
-  Total Zones
-
-</template>
