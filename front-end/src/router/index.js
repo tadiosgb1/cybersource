@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from '../views/opened/landing/Home.vue'
 import Subscription from '../views/opened/landing/AlphaPMS.vue'
 import Festival from '../views/opened/landing/Festival.vue'
+import Onboard from "../views/opened/landing/WegagenMerchantBoarding.vue"
 import Remitance from   '../views/opened/landing/Remitance.vue'
 import Login from '../views/opened/auth/login.vue'
 import ResetPassword from '../views/opened/auth/ResetPassword.vue'
@@ -49,6 +50,16 @@ const routes = [
     meta:
       { requiresGuest: true }
      },
+
+
+       {
+    path: "/onboard", name: "onboard",
+    component: Onboard,
+    meta:
+      { requiresGuest: true }
+     },
+
+
   {
     path: "/register", name: "register",
     component: Registration,
