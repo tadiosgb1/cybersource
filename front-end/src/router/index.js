@@ -4,6 +4,17 @@ import Subscription from '../views/opened/landing/AlphaPMS.vue'
 import Festival from '../views/opened/landing/Festival.vue'
 import Onboard from "../views/opened/landing/WegagenMerchantBoarding.vue"
 import Remitance from   '../views/opened/landing/Remitance.vue'
+
+import Hosted from "../views/opened/landing/payments methods/hosted.vue"
+import Silent from "../views/opened/landing/payments methods/silent.vue"
+import UnifiedM from "../views/opened/landing/payments methods/unifiedm.vue"
+import RestApi from "../views/opened/landing/payments methods/RestApi.vue"
+import Resttransactions from "../views/opened/landing/payments methods/resttranasactions.vue"
+import RestApi1 from "../views/opened/landing/payments methods/rest1.vue"
+import Sdk from "../views/opened/landing/payments methods/sdk.vue"
+
+
+
 import Login from '../views/opened/auth/login.vue'
 import ResetPassword from '../views/opened/auth/ResetPassword.vue'
 import ForgotPasssword from '../views/opened/auth/forgotPassword.vue'
@@ -47,6 +58,57 @@ const routes = [
       {
     path: "/remitance", name: "remitance",
     component: Remitance,
+    meta:
+      { requiresGuest: true }
+     },
+
+     
+
+      {
+    path: "/hosted", name: "hosted",
+    component: Hosted,
+    meta:
+      { requiresGuest: true }
+     },
+
+   {
+    path: "/silent", name: "silent",
+    component: Silent,
+    meta:
+      { requiresGuest: true }
+     },
+
+{
+    path: "/unim", name: "unim",
+    component: UnifiedM,
+    meta:
+      { requiresGuest: true }
+     },
+
+{
+    path: "/rest", name: "rest",
+    component: RestApi,
+    meta:
+      { requiresGuest: true }
+     },
+{
+    path: "/rest-tr", name: "rest-tr",
+    component: Resttransactions,
+    meta:
+      { requiresGuest: true }
+     },
+
+     {
+    path: "/rest1", name: "rest1",
+    component: RestApi1,
+    meta:
+      { requiresGuest: true }
+     },
+
+
+     {
+    path: "/sdk", name: "sdk",
+    component: Sdk,
     meta:
       { requiresGuest: true }
      },
