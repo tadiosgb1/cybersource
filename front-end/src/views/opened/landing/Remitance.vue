@@ -1,158 +1,127 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-    <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+  <div class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
       
-      <div class="bg-blue-900 p-6 text-center">
-        <h1 class="text-white text-2xl font-bold tracking-tighter">WEGAGEN BANK</h1>
-        <p class="text-blue-200 text-xs uppercase tracking-widest mt-1">Direct Remittance Portal</p>
+      <div class="bg-[#003366] p-6 text-center">
+        <img src="https://www.wegagenbank.com.et/wp-content/uploads/2022/01/cropped-Wegagen-Bank-Logo-1.png" class="h-10 mx-auto mb-2 brightness-0 invert" />
+        <h2 class="text-white text-lg font-bold uppercase tracking-tight">Secure Remittance</h2>
       </div>
 
-      <div class="p-8 space-y-5">
-        <div>
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Transfer Amount (USD)</label>
-          <div class="relative">
-            <span class="absolute left-3 top-3 text-gray-400">$</span>
-            <input v-model="amount" type="number" 
-                   class="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" />
+      <div class="p-8 space-y-6">
+        <div class="space-y-1.5">
+          <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Recipient Name</label>
+          <input v-model="recipientName" type="text" placeholder="Full Name in Ethiopia" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-[#ef7d00]" />
+        </div>
+
+        <div class="space-y-4">
+          <div class="space-y-1.5">
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Sender Card Number</label>
+            <div id="number-container" class="secure-input"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Month</label>
+              <div id="month-container" class="secure-input"></div>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">Year</label>
+              <div id="year-container" class="secure-input"></div>
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest">CVV</label>
+              <div id="securityCode-container" class="secure-input"></div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Recipient Name</label>
-          <input v-model="recipient" type="text" placeholder="Full Name in Ethiopia"
-                 class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-600 mb-1">Card Number (Secure Iframe)</label>
-          <div id="card-number-container" 
-               class="h-12 w-full bg-gray-50 border border-gray-200 rounded-lg transition duration-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200">
-          </div>
-        </div>
-
-        <button @click="submitRemittance" :disabled="loading || !flexLoaded"
-                class="w-full py-4 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-xl shadow-lg transition duration-200 transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-          <span v-if="!loading">SEND FUNDS NOW</span>
-          <span v-else class="flex items-center justify-center">
-            <svg class="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            PROCESSING...
-          </span>
+        <button @click="handleRemittance" :disabled="loading || processing" class="w-full py-4 bg-[#ef7d00] hover:bg-[#003366] text-white font-bold rounded-xl transition-all shadow-lg active:scale-95 disabled:opacity-50">
+          <span v-if="processing">Securing Data...</span>
+          <span v-else>Authorize Transfer</span>
         </button>
-
-        <div class="flex items-center justify-center space-x-2">
-          <span class="text-[10px] text-gray-400">SECURED BY CYBERSOURCE</span>
-          <div class="h-1 w-1 bg-gray-300 rounded-full"></div>
-          <span class="text-[10px] text-gray-400">PCI-DSS COMPLIANT</span>
-        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import FlexMicroform from "@cybersource/flex-microform";
+<script setup>
+import { onMounted, ref } from 'vue';
 
-export default {
-  data() {
-    return {
-      amount: 100,
-      recipient: "",
-      loading: false,
-      flexLoaded: false,
-      microformInstance: null
-    };
-  },
+const loading = ref(true);
+const processing = ref(false);
+const recipientName = ref('');
+let microformInstance = null;
 
-  async mounted() {
-    await this.initFlex();
-  },
+onMounted(async () => {
+  try {
+    const response = await fetch('http://localhost:5000/generate-capture-context', { method: 'POST' });
+    const jwt = await response.text();
+    const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
 
-  methods: {
-    async initFlex() {
-      try {
-        // Get JWT Capture Context from backend
-        const response = await fetch("http://localhost:5000/get-context");
-        const captureContext = await response.text();
-
-        if (!captureContext || captureContext.includes("error")) {
-          throw new Error("Failed to load Capture Context");
+    const script = document.createElement('script');
+    script.src = payload.ctx[0].data.clientLibrary;
+    script.crossOrigin = "anonymous";
+    script.onload = () => {
+      const flex = new (window.FLEX || window.Flex)(jwt);
+      
+      // Providing explicit styles ensures the iFrame renders visible text
+      microformInstance = flex.microform({
+        styles: {
+          input: { 'font-size': '16px', 'color': '#334155', 'font-family': 'sans-serif' },
+          '::placeholder': { 'color': '#94a3b8' }
         }
-
-        // **Create Flex instance from NPM module**
-        const flex = new FlexMicroform(captureContext);
-
-        // Create Microform instance
-        this.microformInstance = flex.microform({
-          styles: {
-            input: {
-              "font-size": "16px",
-              "font-family": "Arial",
-              color: "#1a202c"
-            }
-          }
-        });
-
-        // Create and load the number field
-        const numberField = this.microformInstance.createField("number", {
-          placeholder: "0000 0000 0000 0000"
-        });
-
-        numberField.load("#card-number-container");
-        this.flexLoaded = true;
-
-      } catch (err) {
-        console.error("Flex NPM Init Error:", err);
-        alert(err.message);
-      }
-    },
-
-    async submitRemittance() {
-      if (!this.recipient) return alert("Enter recipient name!");
-
-      this.loading = true;
-
-      this.microformInstance.createToken(async (err, token) => {
-        if (err) {
-          alert("Invalid card details");
-          this.loading = false;
-          return;
-        }
-
-        try {
-          const res = await fetch("http://localhost:5000/remit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              token: token,
-              amount: this.amount
-            })
-          });
-
-          const result = await res.json();
-
-          if (result.status === "AUTHORIZED" || result.status === "PENDING") {
-            alert(`Success! Ref: ${result.id}`);
-          } else {
-            alert("Declined: " + result.status);
-          }
-        } catch (error) {
-          alert("Backend error");
-        }
-
-        this.loading = false;
       });
-    }
-  }
+
+      // Loading all 4 fields with placeholders
+      microformInstance.createField('number', { placeholder: '0000 0000 0000 0000' }).load('#number-container');
+      microformInstance.createField('securityCode', { placeholder: 'CVV' }).load('#securityCode-container');
+      microformInstance.createField('expirationMonth', { placeholder: 'MM' }).load('#month-container');
+      microformInstance.createField('expirationYear', { placeholder: 'YYYY' }).load('#year-container');
+      
+      loading.value = false;
+    };
+    document.head.appendChild(script);
+  } catch (err) { console.error("Handshake Error:", err); }
+});
+
+const handleRemittance = () => {
+  if (!microformInstance) return;
+  processing.value = true;
+
+  // Passing empty {} because all data is in the iFrames
+  microformInstance.createToken({}, async (err, token) => {
+    if (err) { alert(err.message); processing.value = false; return; }
+
+    const res = await fetch('http://localhost:5000/process-remittance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, recipientName: recipientName.value })
+    });
+    const result = await res.json();
+    alert(result.status === 'AUTHORIZED' ? "Success!" : "Declined");
+    processing.value = false;
+  });
 };
 </script>
 
 <style scoped>
-/* Ensure the iframe container looks active when focused */
-#card-number-container {
+.secure-input {
+  height: 3rem;
+  width: 100%;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
   display: flex;
   align-items: center;
+  padding: 0 0.75rem;
+}
+.secure-input:focus-within {
+  border-color: #003366;
+  box-shadow: 0 0 0 2px rgba(0, 51, 102, 0.1);
+}
+:deep(iframe) {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
 }
 </style>

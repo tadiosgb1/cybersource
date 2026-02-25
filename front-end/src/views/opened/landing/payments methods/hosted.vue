@@ -53,8 +53,8 @@
 <script>
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid"; // ✅ import UUID
-
 export default {
+  
   data() {
     return {
       loading: false,
@@ -69,6 +69,7 @@ export default {
     };
   },
 
+
   methods: {
     async getSignature() {
       this.loading = true;
@@ -79,7 +80,6 @@ export default {
           transaction_uuid: this.order.transaction_uuid, // ✅ UUID
           reference_number: this.order.reference_number,
         });
-
         this.signatureData = response.data;
       } catch (err) {
         console.error("Failed to get signature", err);

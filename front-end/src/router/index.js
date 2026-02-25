@@ -13,6 +13,7 @@ import Resttransactions from "../views/opened/landing/payments methods/resttrana
 import RestApi1 from "../views/opened/landing/payments methods/rest1.vue"
 import Sdk from "../views/opened/landing/payments methods/sdk.vue"
 
+import Unified from "../views/opened/landing/payments methods/unified.vue"
 
 
 import Login from '../views/opened/auth/login.vue'
@@ -81,6 +82,14 @@ const routes = [
 {
     path: "/unim", name: "unim",
     component: UnifiedM,
+    meta:
+      { requiresGuest: true }
+     },
+     
+
+     {
+    path: "/unified", name: "unified",
+    component: Unified,
     meta:
       { requiresGuest: true }
      },
