@@ -14,7 +14,8 @@ import RestApi1 from "../views/opened/landing/payments methods/rest1.vue"
 import Sdk from "../views/opened/landing/payments methods/sdk.vue"
 
 import Unified from "../views/opened/landing/payments methods/unified.vue"
-
+import trDetail from "../views/opened/landing/payments methods/trDetail.vue"
+import Haile from "../views/opened/landing/payments methods/haile.vue"
 
 import Login from '../views/opened/auth/login.vue'
 import ResetPassword from '../views/opened/auth/ResetPassword.vue'
@@ -94,6 +95,14 @@ const routes = [
       { requiresGuest: true }
      },
 
+       {
+    path: "/haile", name: "haile",
+    component: Haile,
+    meta:
+      { requiresGuest: true }
+     },
+
+
 {
     path: "/rest", name: "rest",
     component: RestApi,
@@ -106,6 +115,14 @@ const routes = [
     meta:
       { requiresGuest: true }
      },
+
+     {
+    path: '/payment/:id', // Matches your API requirement
+    name: 'TransactionDetail',
+    component: trDetail,
+    props: true, // This maps :id to the component's "id" prop
+    meta: { title: 'Wegagen | Payment Details' }
+  },
 
      {
     path: "/rest1", name: "rest1",

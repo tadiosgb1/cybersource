@@ -1,177 +1,228 @@
 <template>
-  <div class="min-h-screen bg-[#F8FAFC] font-sans selection:bg-primary/30">
-    <header class="bg-[#1e293b] sticky top-0 z-50 border-b border-white/10 shadow-xl">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+  <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <div class="h-12 w-12 bg-white rounded-xl flex items-center justify-center p-2 shadow-inner">
-             <div class="text-[#eab308] font-black text-2xl">W</div>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xl font-black text-white tracking-tight">WEGAGEN <span class="text-[#eab308]">IMPACT</span></span>
-            <span class="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">Official Philanthropy Portal</span>
-          </div>
+          <img src="../../../assets/img/wegagen.png" 
+               alt="Wegagen Bank" class="h-10 md:h-12" />
+          <div class="hidden md:block h-8 w-px bg-slate-200"></div>
+          <span class="hidden md:block text-[#003366] font-bold text-sm uppercase tracking-widest">
+           Wegagen Payment  Acceptance
+          </span>
         </div>
-        
-        <nav class="hidden md:flex items-center space-x-8 text-white/80 text-xs font-black uppercase tracking-widest">
-          <a href="#" class="hover:text-[#eab308] transition">Partner NGOs</a>
-          <a href="#" class="hover:text-[#eab308] transition">Transparency Report</a>
-          <button class="bg-[#eab308] text-[#1e293b] px-6 py-2.5 rounded-full hover:scale-105 transition-transform">Bank Login</button>
-        </nav>
+        <div class="flex items-center space-x-2 text-slate-500 text-xs font-bold bg-slate-100 px-4 py-2 rounded-full">
+          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+          <span>SECURE BANKING SESSION</span>
+        </div>
       </div>
     </header>
 
-    <section class="bg-[#1e293b] text-white pt-12 pb-24 px-6 text-center relative overflow-hidden">
-      <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-[#eab308] rounded-full blur-[120px]"></div>
-      </div>
-      
-      <div class="relative z-10 max-w-4xl mx-auto">
-        <h1 class="text-5xl font-black mb-6 leading-tight">Empower Change Across Ethiopia</h1>
-        <p class="text-slate-400 text-lg mb-10">Securely donate to verified local organizations. Every cent is tracked and processed via Wegagen Bank's secure gateway.</p>
-        
-        <div class="max-w-2xl mx-auto bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20 flex">
-          <input type="text" placeholder="Search for a cause (e.g. Education, Health)..." class="flex-grow bg-transparent px-6 text-white outline-none placeholder:text-white/40" />
-          <button class="bg-[#eab308] text-black px-8 py-3 rounded-xl font-bold">Search</button>
-        </div>
+    <section class="bg-[#003366] text-white py-16 px-6 text-center">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Empower Change Across Ethiopia</h1>
+        <p class="text-blue-100 text-lg opacity-80">Your donations are processed through Wegagen Bank's end-to-end encrypted gateway.</p>
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div v-for="merchant in merchants" :key="merchant.id" 
-             class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all group">
+    <main class="max-w-7xl mx-auto px-6 -mt-10 pb-20 flex-grow">
+      <div v-if="!selectedNGO" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div v-for="ngo in merchants" :key="ngo.id" 
+             class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all group">
           <div class="h-48 overflow-hidden relative">
-            <img :src="merchant.image" :alt="merchant.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-primary">
-              {{ merchant.category }}
+            <img :src="ngo.image" :alt="ngo.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-[#003366]">
+              {{ ngo.category }}
             </div>
           </div>
-          
           <div class="p-8">
-            <h3 class="text-2xl font-black text-slate-800 mb-2">{{ merchant.name }}</h3>
-            <p class="text-slate-500 text-sm leading-relaxed mb-6 h-12 overflow-hidden">{{ merchant.description }}</p>
-            
-            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-              <div class="flex flex-col">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Verified by</span>
-                <span class="text-xs font-bold text-slate-700">Wegagen Compliance</span>
-              </div>
-              <button @click="openDonationModal(merchant)" 
-                      class="bg-primary hover:bg-dprimary text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-primary/20 transition-all active:scale-95">
-                Donate Now
+            <h3 class="text-2xl font-black text-slate-800 mb-2">{{ ngo.name }}</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-6">{{ ngo.description }}</p>
+            <button @click="initiateDonation(ngo)" 
+                    class="w-full bg-[#ef7d00] hover:bg-[#d67000] text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 transition-all">
+              Donate Now
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="max-w-xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-500">
+        <button @click="selectedNGO = null" class="mb-6 text-slate-400 hover:text-[#003366] font-bold text-sm flex items-center transition-colors">
+          ← Back to Organizations
+        </button>
+
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+          <div class="bg-[#003366] p-8 text-white text-center">
+            <h2 class="text-xl font-bold tracking-tight">Secure Donation to {{ selectedNGO.name }}</h2>
+            <p class="text-blue-200 text-[10px] uppercase tracking-[0.2em] mt-2">Verified Philanthropy Account</p>
+          </div>
+
+          <div v-if="loading" class="p-16 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ef7d00] mx-auto mb-4"></div>
+            <p class="text-slate-500 font-medium">Loading encryption layers...</p>
+          </div>
+
+          <form v-show="!loading" @submit.prevent="handlePayment" class="p-10 space-y-6">
+            <div class="grid grid-cols-3 gap-3">
+              <button v-for="amt in [500, 1000, 5000]" :key="amt" type="button"
+                      @click="donationAmount = amt"
+                      :class="donationAmount === amt ? 'bg-[#003366] text-white' : 'bg-slate-50 text-slate-500'"
+                      class="py-3 rounded-xl font-bold border border-slate-100 transition-all">
+                {{ amt }} ETB
               </button>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <transition name="fade">
-      <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
-        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" @click="showModal = false"></div>
-        
-        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative overflow-hidden animate-in fade-in zoom-in duration-300">
-          <div class="bg-slate-900 p-8 text-white flex justify-between items-center">
-            <div>
-              <h3 class="text-xl font-bold">Secure Donation</h3>
-              <p class="text-slate-400 text-[10px] uppercase tracking-widest mt-1">To: {{ selectedMerchant.name }}</p>
-            </div>
-            <i class="fas fa-shield-check text-[#eab308] text-3xl"></i>
-          </div>
-
-          <div class="p-10">
-            <div class="space-y-6">
-              <div class="grid grid-cols-3 gap-3">
-                <button v-for="amt in [200, 500, 1000]" :key="amt" 
-                        @click="donationAmount = amt"
-                        :class="donationAmount === amt ? 'bg-primary text-white shadow-lg' : 'bg-slate-50 text-slate-500'"
-                        class="py-3 rounded-xl font-bold transition-all border border-slate-100">
-                  {{ amt }}
-                </button>
+            <div class="space-y-4">
+              <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-700 uppercase">Cardholder Name</label>
+                <input type="text" v-model="cardholderName" placeholder="Full Name" required
+                       class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#003366] outline-none" />
               </div>
 
-              <div class="space-y-4">
-                <div class="space-y-1">
-                  <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Card Holder</label>
-                  <input type="text" placeholder="Name on card" class="custom-input" />
-                </div>
-                <div class="space-y-1">
-                  <label class="text-[10px] font-black uppercase text-slate-400 ml-1">Card Details</label>
-                  <div id="card-number-field" class="custom-input h-[52px] flex items-center text-slate-400 italic">
-                    <i class="far fa-credit-card mr-2"></i> Encrypted Secure Field
+              <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-700 uppercase">Card Number</label>
+                <div id="number-container" class="h-[56px] w-full px-4 bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-[#003366] flex items-center"></div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1 space-y-1.5">
+                  <label class="block text-xs font-bold text-slate-700 uppercase text-center">MM / YYYY</label>
+                  <div class="flex space-x-1">
+                    <input type="text" v-model="expiryMonth" placeholder="MM" maxlength="2" class="w-1/2 p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm" />
+                    <input type="text" v-model="expiryYear" placeholder="YY" maxlength="4" class="w-1/2 p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm" />
                   </div>
                 </div>
-              </div>
-
-              <button class="w-full bg-[#eab308] text-black py-5 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-[#d4a007] transition-all shadow-xl shadow-yellow-500/10">
-                Confirm {{ donationAmount }} ETB Donation
-              </button>
-              
-              <div class="flex items-center justify-center space-x-4 opacity-40 grayscale">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-4" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-6" />
+                <div class="col-span-2 space-y-1.5">
+                  <label class="block text-xs font-bold text-slate-700 uppercase">CVV</label>
+                  <div id="securityCode-container" class="h-[56px] w-full px-4 bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-[#003366]"></div>
+                </div>
               </div>
             </div>
+
+            <button type="submit" :disabled="processing" 
+                    class="w-full py-5 bg-[#ef7d00] hover:bg-[#d67000] text-white font-black rounded-2xl shadow-xl transition-all disabled:opacity-50">
+              <span v-if="!processing">Confirm {{ donationAmount }} ETB Donation</span>
+              <span v-else class="flex items-center justify-center">
+                <svg class="animate-spin h-5 w-5 mr-3 border-2 border-white border-t-transparent rounded-full" viewBox="0 0 24 24"></svg>
+                Encrypting...
+              </span>
+            </button>
+            
+            <div class="flex justify-center space-x-4 opacity-30 grayscale pt-2">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-4" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-4" />
+            </div>
+          </form>
+
+          <div v-if="paymentStatus" class="p-6 border-t bg-slate-50">
+             <div :class="paymentStatus.type === 'success' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'" class="p-4 rounded-xl text-sm border">
+               <p class="font-bold">{{ paymentStatus.title }}</p>
+               <p class="text-xs opacity-80">{{ paymentStatus.message }}</p>
+             </div>
           </div>
         </div>
       </div>
-    </transition>
+    </main>
 
-    <footer class="bg-white py-20 mt-20 border-t border-slate-100">
-      <div class="max-w-7xl mx-auto px-6 text-center">
-        <p class="text-slate-400 text-sm font-medium">© 2026 Wegagen Bank S.C. All Rights Reserved.</p>
-        <p class="text-slate-300 text-xs mt-2 uppercase tracking-widest">Licensed by National Bank of Ethiopia</p>
+    <footer class="bg-white border-t border-slate-200 py-12">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
+        <div>
+          <p class="text-[#003366] font-bold text-sm">Wegagen Bank Donoation Checkout</p>
+          <p class="text-slate-400 text-xs mt-1">Empowering communities through secure digital giving.</p>
+        </div>
+        <div class="flex justify-center space-x-6 text-[10px] font-black text-slate-300">
+          <span>PCI-DSS COMPLIANT</span>
+          <span>SSL ENCRYPTED</span>
+          <span>NBE LICENSED</span>
+        </div>
+        <div class="md:text-right">
+          <p class="text-slate-400 text-[10px]">&copy; 2026 Wegagen Bank S.C. All Rights Reserved.</p>
+        </div>
       </div>
     </footer>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      showModal: false,
-      selectedMerchant: {},
-      donationAmount: 500,
-      merchants: [
-        {
-          id: 'ngo_001',
-          name: 'Green Ethiopia',
-          category: 'Environment',
-          description: 'Reforestation and sustainable farming initiatives in the northern highlands.',
-          image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=400'
-        },
-        {
-          id: 'ngo_002',
-          name: 'Hope Education',
-          category: 'Education',
-          description: 'Providing textbooks and digital learning tools to rural primary schools.',
-          image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=400'
-        },
-        {
-          id: 'ngo_003',
-          name: 'Clean Water Initiative',
-          category: 'Health',
-          description: 'Constructing solar-powered water wells in drought-affected regions.',
-          image: 'https://images.unsplash.com/photo-1541544741938-0af808891447?auto=format&fit=crop&q=80&w=400'
-        }
-      ]
-    }
-  },
-  methods: {
-    openDonationModal(merchant) {
-      this.selectedMerchant = merchant;
-      this.showModal = true;
-    }
+<script setup>
+import { ref } from 'vue';
+
+const merchants = [
+  { id: '001', name: 'Green Ethiopia', category: 'Environment', image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400', description: 'Sustainable reforestation in Northern Ethiopia.' },
+  { id: '002', name: 'Hope Education', category: 'Education', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400', description: 'Digital literacy for rural primary schools.' },
+  { id: '003', name: 'Clean Water', category: 'Health', image: 'https://images.unsplash.com/photo-1541544741938-0af808891447?w=400', description: 'Solar wells for drought-affected areas.' }
+];
+
+const selectedNGO = ref(null);
+const loading = ref(false);
+const processing = ref(false);
+const donationAmount = ref(500);
+const cardholderName = ref('');
+const expiryMonth = ref('');
+const expiryYear = ref('');
+const paymentStatus = ref(null);
+let microformInstance = null;
+
+const initiateDonation = async (ngo) => {
+  selectedNGO.value = ngo;
+  loading.value = true;
+  paymentStatus.value = null;
+  
+  try {
+    const response = await fetch('http://localhost:5000/generate-capture-context', { method: 'POST' });
+    const jwt = await response.text();
+    const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    const context = payload.ctx[0].data;
+
+    const script = document.createElement('script');
+    script.src = context.clientLibrary;
+    script.onload = () => {
+      const flex = new window.Flex(jwt);
+      microformInstance = flex.microform({
+        styles: { input: { 'font-size': '16px', 'color': '#334155' } }
+      });
+      microformInstance.createField('number', { placeholder: '•••• •••• •••• ••••' }).load('#number-container');
+      microformInstance.createField('securityCode', { placeholder: '•••' }).load('#securityCode-container');
+      loading.value = false;
+    };
+    document.head.appendChild(script);
+  } catch (err) {
+    loading.value = false;
+    paymentStatus.value = { type: 'error', title: 'Security Load Failed', message: 'Could not establish secure session.' };
   }
-}
+};
+
+const handlePayment = () => {
+  if (!microformInstance) return;
+  processing.value = true;
+  
+  microformInstance.createToken({ 
+    expirationMonth: expiryMonth.value, 
+    expirationYear: expiryYear.value 
+  }, async (err, token) => {
+    if (err) {
+      processing.value = false;
+      paymentStatus.value = { type: 'error', title: 'Invalid Card', message: err.message };
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/process-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transientToken: token, amount: donationAmount.value, targetNGO: selectedNGO.value.id })
+      });
+      const result = await res.json();
+      if (res.ok) {
+        paymentStatus.value = { type: 'success', title: 'Donation Received', message: `Thank you for supporting ${selectedNGO.value.name}.`, id: result.id };
+      }
+    } catch (e) {
+      paymentStatus.value = { type: 'error', title: 'Network Error', message: 'Failed to reach banking server.' };
+    } finally {
+      processing.value = false;
+    }
+  });
+};
 </script>
 
 <style scoped>
-.custom-input {
-  @apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-semibold text-slate-700 
-         transition-all outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-300;
-}
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+:deep(iframe) { width: 100% !important; height: 100% !important; }
 </style>
