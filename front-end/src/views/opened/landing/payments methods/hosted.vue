@@ -98,7 +98,6 @@
 <script>
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
 export default {
   name: "WegagenPaymentPortal",
   data() {
@@ -118,13 +117,18 @@ export default {
     async getSignature() {
       this.loading = true;
       try {
-        const response = await axios.post("http://localhost:5000/api/sign-request", {
-          amount: this.order.amount,
-          currency: this.order.currency,
-          transaction_uuid: this.order.transaction_uuid,
-          reference_number: this.order.reference_number,
-        });
+        const response = await axios.post(
+          `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/api/sign-request`,
+          {
+            amount: this.order.amount,
+            currency: this.order.currency,
+            transaction_uuid: this.order.transaction_uuid,
+            reference_number: this.order.reference_number,
+          }
+        );
+
         this.signatureData = response.data;
+
       } catch (err) {
         console.error("Failed to get signature", err);
         alert("Security Error: Could not verify transaction signature. Please contact Wegagen Support.");

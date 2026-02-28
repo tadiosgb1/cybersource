@@ -146,7 +146,12 @@ let microformInstance = null;
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:5000/generate-capture-context', { method: 'POST' });
+      const response = await fetch(
+      `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/generate-capture-context`,
+      {
+        method: 'POST'
+      }
+    );
     const jwt = await response.text();
 
     const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
@@ -198,28 +203,45 @@ const handlePayment = () => {
       return;
     }
 
-    try {
-      const response = await fetch('http://localhost:5000/process-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          transientToken: token,
-          amount: "5000",
-          currency: "USD"
-        })
-      });
-
-      const result = await response.json();
-      if (response.ok && result.status === 'AUTHORIZED') {
-        paymentStatus.value = { type: 'success', title: 'Payment Successful', message: 'Your transaction has been approved.', id: result.id };
-      } else {
-        paymentStatus.value = { type: 'error', title: 'Payment Declined', message: result.message || 'The bank declined this transaction.' };
-      }
-    } catch (fetchErr) {
-      paymentStatus.value = { type: 'error', title: 'Network Error', message: 'Communication with payment server failed.' };
-    } finally {
-      processing.value = false;
+  try {
+  const response = await fetch(
+    `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/process-payment`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        transientToken: token,
+        amount: "5000",
+        currency: "USD"
+      })
     }
+  );
+
+  const result = await response.json();
+
+  if (response.ok && result.status === 'AUTHORIZED') {
+    paymentStatus.value = {
+      type: 'success',
+      title: 'Payment Successful',
+      message: 'Your transaction has been approved.',
+      id: result.id
+    };
+  } else {
+    paymentStatus.value = {
+      type: 'error',
+      title: 'Payment Declined',
+      message: result.message || 'The bank declined this transaction.'
+    };
+  }
+} catch (fetchErr) {
+  paymentStatus.value = {
+    type: 'error',
+    title: 'Network Error',
+    message: 'Communication with payment server failed.'
+  };
+} finally {
+  processing.value = false;
+}
   });
 };
 </script>

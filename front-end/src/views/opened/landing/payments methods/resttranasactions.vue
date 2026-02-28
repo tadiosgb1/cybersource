@@ -105,7 +105,6 @@ export default {
     return {
       transactions: [],
       selectedTx: null,
-      apiUrl: "http://localhost:5000/api"
     };
   },
   async mounted() {
@@ -114,7 +113,7 @@ export default {
   methods: {
     async fetchTransactions() {
       try {
-        const res = await axios.get(`${this.apiUrl}/transactions`);
+        const res = await axios.get(`${import.meta.env.VITE_APP_BASE_URL_LOCAL}/api/transactions`);
         this.transactions = res.data;
       } catch (err) {
         console.error("Fetch error:", err);
@@ -140,7 +139,7 @@ export default {
     async capture(id, amount, currency) {
       if (!confirm("Confirm fund capture?")) return;
       try {
-        await axios.post(`${this.apiUrl}/capture/${id}`, {
+        await axios.post(`$${import.meta.env.VITE_APP_BASE_URL_LOCAL}/api/capture/${id}`, {
           amountDetails: { totalAmount: amount, currency }
         });
         this.fetchTransactions(); // Refresh list
@@ -151,7 +150,7 @@ export default {
     async reverse(id, amount, currency) {
       if (!confirm("Are you sure you want to reverse this transaction?")) return;
       try {
-        await axios.post(`${this.apiUrl}/reverse/${id}`, {
+        await axios.post(`${import.meta.env.VITE_APP_BASE_URL_LOCAL}/api/reverse/${id}`, {
           amountDetails: { totalAmount: amount, currency }
         });
         this.fetchTransactions();

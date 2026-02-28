@@ -1,10 +1,9 @@
 <template>
   <div class="min-h-screen flex flex-col bg-[#F8FAFC] font-sans text-slate-800">
-    
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
       <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <img src="https://www.wegagenbank.com.et/wp-content/uploads/2022/01/cropped-Wegagen-Bank-Logo-1.png" 
+          <img src="../../../../assets/img/wegagen.png" 
                alt="Wegagen Bank" class="h-10" />
           <div class="h-6 w-px bg-slate-200"></div>
           <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Secure Checkout</span>
@@ -15,7 +14,6 @@
         </div>
       </div>
     </header>
-
     <main class="flex-grow py-12 px-6">
       <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
         
@@ -224,7 +222,10 @@ export default {
       };
 
       try {
-        const response = await axios.post("http://localhost:5000/api/checkout", payload);
+      const response = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/api/checkout`,
+        payload
+      );
         this.result = response.data;
       } catch (error) {
         console.error("Payment Gateway Error:", error);
