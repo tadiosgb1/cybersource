@@ -254,54 +254,108 @@ const openCheckout = async (product) => {
   paymentStatus.value = null;
 
   try {
-    const response = await fetch('http://localhost:5000/generate-capture-context', { method: 'POST' });
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/generate-capture-context`,
+      { method: 'POST' }
+    );
+
     const jwt = await response.text();
-    const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+
+    const payload = JSON.parse(
+      atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+    );
+
     const context = payload.ctx[0].data;
 
     const script = document.createElement('script');
     script.src = context.clientLibrary;
+
     script.onload = () => {
       const flex = new window.Flex(jwt);
-      microformInstance = flex.microform({ styles: { input: { 'font-size': '15px', 'color': '#2d3748' } } });
-      microformInstance.createField('number', { placeholder: '0000 0000 0000 0000' }).load('#number-container');
-      microformInstance.createField('securityCode', { placeholder: 'CVV' }).load('#securityCode-container');
+
+      microformInstance = flex.microform({
+        styles: {
+          input: {
+            'font-size': '15px',
+            'color': '#2d3748'
+          }
+        }
+      });
+
+      microformInstance
+        .createField('number', { placeholder: '0000 0000 0000 0000' })
+        .load('#number-container');
+
+      microformInstance
+        .createField('securityCode', { placeholder: 'CVV' })
+        .load('#securityCode-container');
+
       loading.value = false;
     };
+
     document.head.appendChild(script);
+
   } catch (err) {
     loading.value = false;
-    paymentStatus.value = { type: 'error', message: 'Payment module failed to load.' };
+    paymentStatus.value = {
+      type: 'error',
+      message: 'Payment module failed to load.'
+    };
   }
 };
 
 const processTransaction = () => {
   if (!microformInstance) return;
   processing.value = true;
-  
-  microformInstance.createToken({ expirationMonth: expiryMonth.value, expirationYear: expiryYear.value }, async (err, token) => {
-    if (err) {
-      processing.value = false;
-      paymentStatus.value = { type: 'error', message: 'Valid payment details required.' };
-      return;
-    }
-    
-    try {
-      const res = await fetch('http://localhost:5000/process-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transientToken: token, amount: activeProduct.value.price, productId: activeProduct.value.id })
-      });
-      const result = await res.json();
-      if (res.ok) {
-        paymentStatus.value = { type: 'success', message: 'Order Confirmed! Receipt ID: ' + result.id };
+
+  microformInstance.createToken(
+    {
+      expirationMonth: expiryMonth.value,
+      expirationYear: expiryYear.value
+    },
+    async (err, token) => {
+      if (err) {
+        processing.value = false;
+        paymentStatus.value = {
+          type: 'error',
+          message: 'Valid payment details required.'
+        };
+        return;
       }
-    } catch (e) {
-      paymentStatus.value = { type: 'error', message: 'Bank communication error.' };
-    } finally {
-      processing.value = false;
+
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/process-payment`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transientToken: token,
+              amount: activeProduct.value.price,
+              productId: activeProduct.value.id
+            })
+          }
+        );
+
+        const result = await res.json();
+
+        if (res.ok) {
+          paymentStatus.value = {
+            type: 'success',
+            message: 'Order Confirmed! Receipt ID: ' + result.id
+          };
+        }
+
+      } catch (e) {
+        paymentStatus.value = {
+          type: 'error',
+          message: 'Bank communication error.'
+        };
+      } finally {
+        processing.value = false;
+      }
     }
-  });
+  );
 };
 </script>
 

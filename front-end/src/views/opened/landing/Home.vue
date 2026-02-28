@@ -166,60 +166,112 @@ const initiateDonation = async (ngo) => {
   loading.value = true;
   paymentStatus.value = null;
   
-  try {
-    const response = await fetch('http://localhost:5000/generate-capture-context', { method: 'POST' });
-    const jwt = await response.text();
-    const payload = JSON.parse(atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-    const context = payload.ctx[0].data;
+try {
+  const response = await fetch(
+    `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/generate-capture-context`,
+    { method: 'POST' }
+  );
 
-    const script = document.createElement('script');
-    script.src = context.clientLibrary;
-    script.onload = () => {
-      const flex = new window.Flex(jwt);
-      microformInstance = flex.microform({
-        styles: { input: { 'font-size': '16px', 'color': '#334155' } }
-      });
-      microformInstance.createField('number', { placeholder: '•••• •••• •••• ••••' }).load('#number-container');
-      microformInstance.createField('securityCode', { placeholder: '•••' }).load('#securityCode-container');
-      loading.value = false;
-    };
-    document.head.appendChild(script);
-  } catch (err) {
+  const jwt = await response.text();
+
+  const payload = JSON.parse(
+    atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+  );
+
+  const context = payload.ctx[0].data;
+
+  const script = document.createElement('script');
+  script.src = context.clientLibrary;
+  script.onload = () => {
+    const flex = new window.Flex(jwt);
+
+    microformInstance = flex.microform({
+      styles: {
+        input: {
+          'font-size': '16px',
+          'color': '#334155'
+        }
+      }
+    });
+
+    microformInstance
+      .createField('number', { placeholder: '•••• •••• •••• ••••' })
+      .load('#number-container');
+
+    microformInstance
+      .createField('securityCode', { placeholder: '•••' })
+      .load('#securityCode-container');
+
     loading.value = false;
-    paymentStatus.value = { type: 'error', title: 'Security Load Failed', message: 'Could not establish secure session.' };
-  }
+  };
+
+  document.head.appendChild(script);
+
+} catch (err) {
+  loading.value = false;
+  paymentStatus.value = {
+    type: 'error',
+    title: 'Security Load Failed',
+    message: 'Could not establish secure session.'
+  };
+}
 };
 
 const handlePayment = () => {
   if (!microformInstance) return;
   processing.value = true;
-  
-  microformInstance.createToken({ 
-    expirationMonth: expiryMonth.value, 
-    expirationYear: expiryYear.value 
-  }, async (err, token) => {
-    if (err) {
-      processing.value = false;
-      paymentStatus.value = { type: 'error', title: 'Invalid Card', message: err.message };
-      return;
-    }
 
-    try {
-      const res = await fetch('http://localhost:5000/process-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transientToken: token, amount: donationAmount.value, targetNGO: selectedNGO.value.id })
-      });
-      const result = await res.json();
-      if (res.ok) {
-        paymentStatus.value = { type: 'success', title: 'Donation Received', message: `Thank you for supporting ${selectedNGO.value.name}.`, id: result.id };
+  microformInstance.createToken(
+    {
+      expirationMonth: expiryMonth.value,
+      expirationYear: expiryYear.value
+    },
+    async (err, token) => {
+      if (err) {
+        processing.value = false;
+        paymentStatus.value = {
+          type: 'error',
+          title: 'Invalid Card',
+          message: err.message
+        };
+        return;
       }
-    } catch (e) {
-      paymentStatus.value = { type: 'error', title: 'Network Error', message: 'Failed to reach banking server.' };
-    } finally {
-      processing.value = false;
+
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/process-payment`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transientToken: token,
+              amount: donationAmount.value,
+              targetNGO: selectedNGO.value.id
+            })
+          }
+        );
+
+        const result = await res.json();
+
+        if (res.ok) {
+          paymentStatus.value = {
+            type: 'success',
+            title: 'Donation Received',
+            message: `Thank you for supporting ${selectedNGO.value.name}.`,
+            id: result.id
+          };
+        }
+      } catch (e) {
+        paymentStatus.value = {
+          type: 'error',
+          title: 'Network Error',
+          message: 'Failed to reach banking server.'
+        };
+      } finally {
+        processing.value = false;
+      }
     }
-  });
+  );
 };
 </script>
 
