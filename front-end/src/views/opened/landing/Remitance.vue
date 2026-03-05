@@ -10,20 +10,10 @@
             <span class="block text-[9px] text-[#ef7d00] font-bold uppercase tracking-[0.2em]">Global Secure Gateway</span>
           </div>
         </div>
-
-        <div class="hidden lg:flex items-center space-x-8 text-[11px] font-black uppercase tracking-widest text-slate-500">
-          <a href="#" class="text-[#003366] border-b-2 border-[#ef7d00] pb-1">Move Money</a>
-          <a href="#" class="hover:text-[#003366] transition">Track Transfer</a>
-          <a href="#" class="hover:text-[#003366] transition">Find Branch</a>
-          <div class="flex items-center space-x-2 bg-emerald-50 text-emerald-600 px-4 py-2 rounded-full border border-emerald-100">
-            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-            <span class="text-[9px]">Bank-Grade Security</span>
-          </div>
-        </div>
       </div>
     </nav>
 
-    <header class="bg-[#003366] py-12 px-6 overflow-hidden relative">
+    <header v-if="step !== 3" class="bg-[#003366] py-12 px-6 overflow-hidden relative">
       <div class="absolute right-0 top-0 w-1/3 h-full opacity-10 pointer-events-none">
         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full fill-white">
           <path d="M44.7,-76.4C58.1,-69.2,69.2,-58.1,76.4,-44.7C83.5,-31.3,86.7,-15.7,85.2,-0.9C83.7,14,77.5,27.9,68.8,40.1C60.1,52.3,48.9,62.7,35.9,70.5C22.9,78.2,8,83.2,-6.4,81.4C-20.8,79.5,-34.7,70.7,-46.8,61C-58.9,51.3,-69.1,40.7,-75.4,28.1C-81.7,15.5,-84,1,-82.1,-12.7C-80.2,-26.4,-74,-39.3,-64.1,-49.6C-54.2,-59.8,-40.6,-67.4,-27.2,-74.6C-13.8,-81.8,-0.1,-88.6,13.8,-88.7C27.6,-88.7,41.2,-81.9,44.7,-76.4Z" transform="translate(100 100)" />
@@ -34,7 +24,7 @@
           Move money to your <span class="text-[#ef7d00]">friends & family</span>
         </h1>
         <p class="text-blue-100 text-lg md:text-xl max-w-2xl font-light">
-          Reliable, fast, and secure cross-border transfers by <span class="font-bold border-b border-[#ef7d00]">Wegagen Bank</span>. Connect your world to Ethiopia in seconds.
+          Reliable, fast, and secure cross-border transfers by <span class="font-bold border-b border-[#ef7d00]">Wegagen Bank</span>.
         </p>
       </div>
     </header>
@@ -42,7 +32,6 @@
     <main class="flex-grow max-w-6xl mx-auto px-6 py-12 w-full">
       
       <div v-if="step === 1" class="grid grid-cols-1 lg:grid-cols-12 gap-10 animate-in fade-in slide-in-from-bottom-8">
-        
         <div class="lg:col-span-5 bg-white rounded-[2rem] shadow-xl border border-slate-100 p-8">
           <h3 class="text-sm font-black text-[#003366] uppercase tracking-widest mb-6 flex items-center">
             <span class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-3">1</span>
@@ -80,14 +69,11 @@
             <span class="w-8 h-8 rounded-full bg-orange-50 text-[#ef7d00] flex items-center justify-center mr-3">2</span>
             Transfer Details
           </h3>
-          
           <div class="space-y-6">
             <div class="space-y-1">
               <label class="remit-label">Wegagen Recipient Account</label>
-              <input v-model="accountNumber" type="text" placeholder="0000 0000 0000" 
-                     class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xl font-bold text-slate-700 focus:border-[#003366] outline-none transition-all" />
+              <input v-model="accountNumber" type="text" placeholder="0000 0000 0000" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xl font-bold text-slate-700 focus:border-[#003366] outline-none transition-all" />
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-1">
                 <label class="remit-label">Send Amount</label>
@@ -104,13 +90,9 @@
                 </div>
               </div>
             </div>
-
-            <button @click="verifySampleAccount" :disabled="isValidating || !accountNumber || !sender.email" 
-                    class="w-full bg-[#003366] hover:bg-[#002244] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all active:scale-95">
+            <button @click="verifySampleAccount" :disabled="isValidating || !accountNumber || !sender.email" class="w-full bg-[#003366] hover:bg-[#002244] text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all">
               <span v-if="!isValidating">Confirm & Secure Payment</span>
-              <span v-else class="flex items-center justify-center">
-                <svg class="animate-spin h-4 w-4 mr-2 border-2 border-white/30 border-t-white rounded-full" viewBox="0 0 24 24"></svg> Identifying Recipient...
-              </span>
+              <span v-else>Identifying Recipient...</span>
             </button>
           </div>
         </div>
@@ -147,32 +129,24 @@
             <div class="flex items-center space-x-4 opacity-40">
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-3" :class="{'opacity-100 grayscale-0 scale-110': cardBrand === 'visa'}" />
               <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-6" :class="{'opacity-100 grayscale-0 scale-110': cardBrand === 'mastercard'}" />
-              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b3/American_Express_logo_%282018%29.svg" class="h-6" :class="{'opacity-100 grayscale-0 scale-110': cardBrand === 'amex'}" />
             </div>
           </div>
-
-          <div v-if="loadingFields" class="py-20 text-center">
-            <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-[#ef7d00] mx-auto mb-4"></div>
-            <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Establishing SSL Tunnel...</p>
-          </div>
-
-          <form v-show="!loadingFields" @submit.prevent="processPayment" class="space-y-6">
+          
+          <form @submit.prevent="processPayment" class="space-y-6">
             <div class="space-y-2">
               <label class="remit-label">Cardholder Name</label>
-              <input v-model="cardholderName" type="text" placeholder="Full Name on Card" class="remit-input" required />
+              <input v-model="cardholderName" type="text" class="remit-input" required />
             </div>
-
             <div class="space-y-2">
               <label class="remit-label">Secure Card Number</label>
               <div id="number-container" class="microform-field"></div>
             </div>
-
             <div class="grid grid-cols-2 gap-6">
               <div class="space-y-2">
                 <label class="remit-label">Expiry Date</label>
                 <div class="flex space-x-2">
-                  <input v-model="expiryMonth" placeholder="MM" maxlength="2" class="remit-input text-center px-0 w-1/3" />
-                  <input v-model="expiryYear" placeholder="YYYY" maxlength="4" class="remit-input text-center px-0 w-2/3" />
+                  <input v-model="expiryMonth" placeholder="MM" maxlength="2" class="remit-input text-center" />
+                  <input v-model="expiryYear" placeholder="YYYY" maxlength="4" class="remit-input text-center" />
                 </div>
               </div>
               <div class="space-y-2">
@@ -180,20 +154,78 @@
                 <div id="securityCode-container" class="microform-field"></div>
               </div>
             </div>
-
-            <button :disabled="processing" type="submit" class="w-full bg-[#ef7d00] hover:bg-[#d67000] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl mt-6 transition-all active:scale-95">
+            <button :disabled="processing" type="submit" class="w-full bg-[#ef7d00] hover:bg-[#d67000] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl mt-6 transition-all">
               <span v-if="!processing">Authorize Secure Transfer</span>
-              <span v-else class="flex items-center justify-center">
-                <svg class="animate-spin h-4 w-4 mr-3 border-2 border-white/30 border-t-white rounded-full" viewBox="0 0 24 24"></svg> Validating...
-              </span>
+              <span v-else>Processing...</span>
             </button>
           </form>
-
-          <div v-if="status" :class="status.type === 'success' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'" class="mt-8 p-6 rounded-2xl text-xs font-bold border animate-in slide-in-from-top-4 flex items-center space-x-3">
-             <span>{{ status.message }}</span>
+          
+          <div v-if="status" :class="status.type === 'success' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'" class="mt-8 p-6 rounded-2xl text-xs font-bold border">
+            {{ status.message }}
           </div>
         </div>
       </div>
+
+      <div v-if="step === 3" class="max-w-2xl mx-auto animate-in fade-in zoom-in-95">
+        <div id="receipt-content" class="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+          <div class="bg-[#003366] p-8 text-center text-white">
+            <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-serif italic">Transfer Successful</h2>
+            <p class="text-blue-200 text-xs font-bold uppercase tracking-widest mt-2">Transaction ID: {{ transactionId }}</p>
+          </div>
+          
+          <div class="p-8 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-50 pb-4">
+              <img src="../../../assets/img/wegagen.png" alt="Wegagen Bank" class="h-8" />
+              <div class="text-right">
+                <p class="text-[10px] font-black text-slate-400 uppercase">Date</p>
+                <p class="text-sm font-bold">{{ new Date().toLocaleDateString() }}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-8">
+              <div>
+                <p class="remit-label">Sender Name</p>
+                <p class="font-bold text-slate-800">{{ sender.name }}</p>
+                <p class="text-xs text-slate-500">{{ sender.country }}</p>
+              </div>
+              <div>
+                <p class="remit-label">Receiver Name</p>
+                <p class="font-bold text-slate-800">{{ recipientName }}</p>
+                <p class="text-xs text-slate-500">Acc: {{ accountNumber }}</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-2xl p-6 space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-500">Amount Sent</span>
+                <span class="font-black text-[#003366]">{{ sendAmount }} {{ selectedCurrency }}</span>
+              </div>
+              <div class="flex justify-between items-center border-t border-slate-200 pt-4">
+                <span class="text-xs font-black text-[#ef7d00] uppercase">To Be Received</span>
+                <span class="text-xl font-black text-[#003366]">{{ Number(convertedAmount).toLocaleString() }} ETB</span>
+              </div>
+            </div>
+
+            <div class="text-center space-y-4 pt-4">
+              <p class="text-[10px] text-slate-400 italic">Funds are typically available within minutes. Thank you for choosing Wegagen Bank.</p>
+              <div class="flex gap-4">
+                <button @click="printReceipt" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition">
+                  Download Receipt
+                </button>
+                <button @click="resetForm" class="flex-1 bg-[#003366] text-white py-4 rounded-xl font-black text-[10px] uppercase tracking-widest transition">
+                  New Transfer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </template>
@@ -206,6 +238,7 @@ export default {
       isValidating: false,
       loadingFields: false,
       processing: false,
+      transactionId: '',
       
       sender: {
         name: '',
@@ -324,7 +357,9 @@ export default {
           });
 
           if (res.ok) {
-            this.status = { type: 'success', message: 'Success! Funds are on the way to ' + this.recipientName };
+            // Generate a random Transaction ID for the receipt
+            this.transactionId = 'WGN-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            this.step = 3; // Switch to Receipt Step
           } else { throw new Error(); }
         } catch (e) {
           this.status = { type: 'error', message: 'Authorization Declined by Bank.' };
@@ -332,12 +367,21 @@ export default {
           this.processing = false;
         }
       });
+    },
+
+    printReceipt() {
+      window.print();
+    },
+
+    resetForm() {
+      window.location.reload();
     }
   }
 };
 </script>
 
 <style scoped>
+/* Previous styles remain */
 .remit-input {
   @apply w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-[#003366] transition-all;
 }
@@ -348,6 +392,20 @@ export default {
   @apply text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1;
 }
 :deep(iframe) { width: 100% !important; height: 100% !important; }
-.grayscale { filter: grayscale(100%); }
-.grayscale-0 { filter: grayscale(0%); }
+
+/* Print styles to only print the receipt card */
+@media print {
+  nav, header, button, .no-print {
+    display: none !important;
+  }
+  body, main {
+    background: white !important;
+    padding: 0 !important;
+  }
+  #receipt-content {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+    margin: 0 auto !important;
+  }
+}
 </style>
