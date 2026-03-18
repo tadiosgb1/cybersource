@@ -15,7 +15,7 @@
               class="h-8 w-8 rounded-lg"
             />
           </div>
-          <p class="tracking-tight">Alpha PMS</p>
+          <p class="tracking-tight">Wegagen Donations</p>
         </div>
 
         <div class="flex-1 overflow-y-auto custom-scrollbar pt-4">
@@ -62,24 +62,17 @@ export default {
       showTitle: false,
       is_superuser: false,
       menuItems: [
-        { name: "Dashboard", route: "first-dash", icon: "fas fa-gauge" },
-        { name: "Configurations", route: "configurations", icon: "fas fa-gear", is_superuser: true },
-        { name: "Subscriptions", route: "subscriptions_view", icon: "fas fa-receipt", permission: "pms.view_subscription" },
-        { name: "Groups", route: "groups", icon: "fas fa-layer-group", permission: "auth.view_group" },
-        { name: "Permissions", route: "permissions_view", icon: "fas fa-shield-halved", permission: "auth.view_permission" },
-        { name: "Users", route: "user_view", icon: "fas fa-user", permission: "pms.view_user" },
-        { name: "Zones", route: "zones", icon: "fas fa-map-location-dot", permission: "pms.view_propertyzone" },
-        { name: "Coworking Spaces", route: "coworking-spaces", icon: "fas fa-people-roof" },
-        { name: "Properties", route: "properties", icon: "fas fa-building", permission: "pms.view_property" },
-        { name: "For Sale", route: "propertiesListForSale", icon: "fas fa-tag" },
-        { name: "Rent Management", route: "rents", icon: "fas fa-file-contract", permission: "pms.view_rent" },
-        { name: "Shared Rentals", route: "coworking-space-rentals", icon: "fas fa-file-signature" },
-        { name: "Maintenance", route: "maintenance-requests", icon: "fas fa-screwdriver-wrench", permission: "pms.view_maintenancerequest" },
-        { name: "Payments", route: "payments", icon: "fas fa-money-bill-transfer" },
-        { name: "Transactions", route: "transactions", icon: "fas fa-arrows-rotate" },
-        { name: "Reports", route: "reports", icon: "fas fa-chart-pie" },
-        { name: "Notifications", route: "notifications", icon: "fas fa-bell" },
-        { name: "Contacts", route: "contacts", icon: "fas fa-address-book" },
+
+    
+
+       { name: "Dashboard", route: "first-dash", icon: "fas fa-gauge" },
+
+       {
+      name: "Users",
+      route: "Users-view",
+      icon: "fas fa-folder",
+      color: "#22c55e"
+    },
       ],
     };
   },

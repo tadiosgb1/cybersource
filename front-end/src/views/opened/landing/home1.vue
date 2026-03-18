@@ -1,6 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col font-sans">
-    <!-- Header -->
+  <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div class="flex items-center space-x-4">
@@ -8,7 +7,7 @@
                alt="Wegagen Bank" class="h-10 md:h-12" />
           <div class="hidden md:block h-8 w-px bg-slate-200"></div>
           <span class="hidden md:block text-[#003366] font-bold text-sm uppercase tracking-widest">
-           Wegagen Payment Acceptance
+           Wegagen Payment  Acceptance
           </span>
         </div>
         <div class="flex items-center space-x-2 text-slate-500 text-xs font-bold bg-slate-100 px-4 py-2 rounded-full">
@@ -18,7 +17,6 @@
       </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="bg-[#003366] text-white py-16 px-6 text-center">
       <div class="max-w-4xl mx-auto">
         <h1 class="text-4xl md:text-5xl font-black mb-4 leading-tight">Empower Change Across Ethiopia</h1>
@@ -26,20 +24,18 @@
       </div>
     </section>
 
-    <!-- Merchant Grid -->
     <main class="max-w-7xl mx-auto px-6 -mt-10 pb-20 flex-grow">
       <div v-if="!selectedNGO" class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div v-for="ngo in merchants" :key="ngo.id" 
-             class="bg-white rounded-3xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all group">
-          <div class="h-48 overflow-hidden relative flex items-center justify-center bg-slate-100">
-            <img v-if="ngo.logo" 
-                 :src="resolveLogoUrl(ngo.logo)" 
-                 :alt="ngo.companyName" 
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            <span v-else class="text-slate-400 text-sm">No Logo</span>
+             class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden hover:shadow-2xl transition-all group">
+          <div class="h-48 overflow-hidden relative">
+            <img :src="ngo.image" :alt="ngo.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase text-[#003366]">
+              {{ ngo.category }}
+            </div>
           </div>
           <div class="p-8">
-            <h3 class="text-2xl font-black text-slate-800 mb-2">{{ ngo.companyName }}</h3>
+            <h3 class="text-2xl font-black text-slate-800 mb-2">{{ ngo.name }}</h3>
             <p class="text-slate-500 text-sm leading-relaxed mb-6">{{ ngo.description }}</p>
             <button @click="initiateDonation(ngo)" 
                     class="w-full bg-[#ef7d00] hover:bg-[#d67000] text-white py-4 rounded-2xl font-bold shadow-lg shadow-orange-200 transition-all">
@@ -49,7 +45,6 @@
         </div>
       </div>
 
-      <!-- Donation Form -->
       <div v-else class="max-w-xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-500">
         <button @click="selectedNGO = null" class="mb-6 text-slate-400 hover:text-[#003366] font-bold text-sm flex items-center transition-colors">
           ← Back to Organizations
@@ -57,7 +52,7 @@
 
         <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
           <div class="bg-[#003366] p-8 text-white text-center">
-            <h2 class="text-xl font-bold tracking-tight">Secure Donation to {{ selectedNGO.companyName }}</h2>
+            <h2 class="text-xl font-bold tracking-tight">Secure Donation to {{ selectedNGO.name }}</h2>
             <p class="text-blue-200 text-[10px] uppercase tracking-[0.2em] mt-2">Verified Philanthropy Account</p>
           </div>
 
@@ -93,7 +88,7 @@
                   <label class="block text-xs font-bold text-slate-700 uppercase text-center">MM / YYYY</label>
                   <div class="flex space-x-1">
                     <input type="text" v-model="expiryMonth" placeholder="MM" maxlength="2" class="w-1/2 p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm" />
-                    <input type="text" v-model="expiryYear" placeholder="YYYY" maxlength="4" class="w-1/2 p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm" />
+                    <input type="text" v-model="expiryYear" placeholder="YY" maxlength="4" class="w-1/2 p-4 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm" />
                   </div>
                 </div>
                 <div class="col-span-2 space-y-1.5">
@@ -119,20 +114,19 @@
           </form>
 
           <div v-if="paymentStatus" class="p-6 border-t bg-slate-50">
-            <div :class="paymentStatus.type === 'success' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'" class="p-4 rounded-xl text-sm border">
-              <p class="font-bold">{{ paymentStatus.title }}</p>
-              <p class="text-xs opacity-80">{{ paymentStatus.message }}</p>
-            </div>
+             <div :class="paymentStatus.type === 'success' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'" class="p-4 rounded-xl text-sm border">
+               <p class="font-bold">{{ paymentStatus.title }}</p>
+               <p class="text-xs opacity-80">{{ paymentStatus.message }}</p>
+             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-12">
       <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 items-center text-center md:text-left">
         <div>
-          <p class="text-[#003366] font-bold text-sm">Wegagen Bank Donation Checkout</p>
+          <p class="text-[#003366] font-bold text-sm">Wegagen Bank Donoation Checkout</p>
           <p class="text-slate-400 text-xs mt-1">Empowering communities through secure digital giving.</p>
         </div>
         <div class="flex justify-center space-x-6 text-[10px] font-black text-slate-300">
@@ -149,12 +143,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL_LOCAL;
-const BASE_URL_SOURCE = import.meta.env.VITE_APP_BASE_URL_LOCAL_SOURCE;
+const merchants = [
+  { id: '001', name: 'Green Ethiopia', category: 'Environment', image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400', description: 'Sustainable reforestation in Northern Ethiopia.' },
+  { id: '002', name: 'Hope Education', category: 'Education', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400', description: 'Digital literacy for rural primary schools.' },
+  { id: '003', name: 'Clean Water', category: 'Health', image: 'https://images.unsplash.com/photo-1541544741938-0af808891447?w=400', description: 'Solar wells for drought-affected areas.' }
+];
 
-const merchants = ref([]);
 const selectedNGO = ref(null);
 const loading = ref(false);
 const processing = ref(false);
@@ -165,99 +161,118 @@ const expiryYear = ref('');
 const paymentStatus = ref(null);
 let microformInstance = null;
 
-// Fetch merchants from backend
-const fetchMerchants = async () => {
-  loading.value = true;
-  try {
-    const res = await fetch(`${BASE_URL}/merchants`);
-    const data = await res.json();
-    merchants.value = data;
-  } catch (err) {
-    console.error('Failed to fetch merchants:', err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-// Resolve logo URL
-const resolveLogoUrl = (logoPath) => {
-  if (!logoPath) return '';
-  if (logoPath.startsWith('http')) return logoPath;
-  return `${BASE_URL_SOURCE}${logoPath}`;
-};
-
-// Initiate donation (generate capture context)
 const initiateDonation = async (ngo) => {
   selectedNGO.value = ngo;
   loading.value = true;
   paymentStatus.value = null;
+  
+try {
+  const response = await fetch(
+    `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/generate-capture-context`,
+    { method: 'POST' }
+  );
 
-  try {
-    const res = await fetch(`${BASE_URL}/generate-capture-context`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ merchantId: ngo.merchantId })
-    });
-    const jwt = await res.text();
+  const jwt = await response.text();
 
-    const payload = JSON.parse(
-      atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
-    );
-    const context = payload.ctx[0].data;
+  const payload = JSON.parse(
+    atob(jwt.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+  );
 
-    const script = document.createElement('script');
-    script.src = context.clientLibrary;
-    script.onload = () => {
-      const flex = new window.Flex(jwt);
+  const context = payload.ctx[0].data;
 
-      microformInstance = flex.microform({
-        styles: {
-          input: { 'font-size': '16px', 'color': '#334155' }
+  const script = document.createElement('script');
+  script.src = context.clientLibrary;
+  script.onload = () => {
+    const flex = new window.Flex(jwt);
+
+    microformInstance = flex.microform({
+      styles: {
+        input: {
+          'font-size': '16px',
+          'color': '#334155'
         }
-      });
+      }
+    });
 
-      microformInstance.createField('number', { placeholder: '•••• •••• •••• ••••' }).load('#number-container');
-      microformInstance.createField('securityCode', { placeholder: '•••' }).load('#securityCode-container');
+    microformInstance
+      .createField('number', { placeholder: '•••• •••• •••• ••••' })
+      .load('#number-container');
 
-      loading.value = false;
-    };
-    document.head.appendChild(script);
-  } catch (err) {
+    microformInstance
+      .createField('securityCode', { placeholder: '•••' })
+      .load('#securityCode-container');
+
     loading.value = false;
-    paymentStatus.value = { type: 'error', title: 'Security Load Failed', message: 'Could not establish secure session.' };
-  }
+  };
+
+  document.head.appendChild(script);
+
+} catch (err) {
+  loading.value = false;
+  paymentStatus.value = {
+    type: 'error',
+    title: 'Security Load Failed',
+    message: 'Could not establish secure session.'
+  };
+}
 };
 
 const handlePayment = () => {
   if (!microformInstance) return;
   processing.value = true;
 
-  microformInstance.createToken({ expirationMonth: expiryMonth.value, expirationYear: expiryYear.value }, async (err, token) => {
-    if (err) {
-      processing.value = false;
-      paymentStatus.value = { type: 'error', title: 'Invalid Card', message: err.message };
-      return;
-    }
-    try {
-      const res = await fetch(`${BASE_URL}/process-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transientToken: token, amount: donationAmount.value, targetNGO: selectedNGO.value.merchantId })
-      });
-      const result = await res.json();
-
-      if (res.ok) {
-        paymentStatus.value = { type: 'success', title: 'Donation Received', message: `Thank you for supporting ${selectedNGO.value.companyName}.`, id: result.id };
+  microformInstance.createToken(
+    {
+      expirationMonth: expiryMonth.value,
+      expirationYear: expiryYear.value
+    },
+    async (err, token) => {
+      if (err) {
+        processing.value = false;
+        paymentStatus.value = {
+          type: 'error',
+          title: 'Invalid Card',
+          message: err.message
+        };
+        return;
       }
-    } catch (e) {
-      paymentStatus.value = { type: 'error', title: 'Network Error', message: 'Failed to reach banking server.' };
-    } finally {
-      processing.value = false;
-    }
-  });
-};
 
-onMounted(fetchMerchants);
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_APP_BASE_URL_LOCAL}/process-payment`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transientToken: token,
+              amount: donationAmount.value,
+              targetNGO: selectedNGO.value.id
+            })
+          }
+        );
+
+        const result = await res.json();
+
+        if (res.ok) {
+          paymentStatus.value = {
+            type: 'success',
+            title: 'Donation Received',
+            message: `Thank you for supporting ${selectedNGO.value.name}.`,
+            id: result.id
+          };
+        }
+      } catch (e) {
+        paymentStatus.value = {
+          type: 'error',
+          title: 'Network Error',
+          message: 'Failed to reach banking server.'
+        };
+      } finally {
+        processing.value = false;
+      }
+    }
+  );
+};
 </script>
 
 <style scoped>

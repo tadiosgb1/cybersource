@@ -4,14 +4,22 @@ import Subscription from '../views/opened/landing/AlphaPMS.vue'
 import Festival from '../views/opened/landing/Festival.vue'
 import Onboard from "../views/opened/landing/WegagenMerchantBoarding.vue"
 import Remitance from   '../views/opened/landing/Remitance.vue'
+import Remit from   '../views/opened/landing/payments methods/remit.vue'
+import donateMerchantAdd from '../views/opened/landing/addDonate.vue'
+import Donates from '../views/opened/landing/donates.vue'
 
 import Hosted from "../views/opened/landing/payments methods/hosted.vue"
+
+import dashboard from "../views/closed/dashboard.vue"
+import first_dash from "../views/closed/first_dash.vue"
+
 import Silent from "../views/opened/landing/payments methods/silent.vue"
 import UnifiedM from "../views/opened/landing/payments methods/unifiedm.vue"
 import RestApi from "../views/opened/landing/payments methods/RestApi.vue"
 import Resttransactions from "../views/opened/landing/payments methods/resttranasactions.vue"
 import RestApi1 from "../views/opened/landing/payments methods/rest1.vue"
 import Sdk from "../views/opened/landing/payments methods/sdk.vue"
+
 
 import Unified from "../views/opened/landing/payments methods/unified.vue"
 import trDetail from "../views/opened/landing/payments methods/trDetail.vue"
@@ -64,7 +72,12 @@ const routes = [
       { requiresGuest: true }
      },
 
-     
+       {
+    path: "/remit", name: "remit",
+    component: Remit,
+    meta:
+      { requiresGuest: true }
+     },
 
       {
     path: "/hosted", name: "hosted",
@@ -98,6 +111,19 @@ const routes = [
        {
     path: "/haile", name: "haile",
     component: Haile,
+    meta:
+      { requiresGuest: true }
+     },
+
+     {
+    path: "/add-donate", name: "add-donate",
+    component:donateMerchantAdd,
+    meta:
+      { requiresGuest: true }
+     },
+    {
+    path: "/donates", name: "donates",
+    component:Donates,
     meta:
       { requiresGuest: true }
      },
@@ -176,16 +202,49 @@ const routes = [
     },
 
   
-  // {
-  //   path: "/dashboard", name: "dashboard",
-  //   component: dashboard,
-  //   meta:
-  //     { requiresGuest: true },
-  //   children: [
+  {
+     path: "/dashboard", name: "dashboard",
+     component: dashboard,
+     meta:
+       { requiresAuth: true },
+       children: [
+      {
+        path: "users",
+        name: "Users-view",
+        component: () => import('../views/closed/Users/UsersView.vue'),
+      },
+      {
+        path: "users/add",
+        name: "Users-add",
+        component: () => import('../views/closed/Users/AddUsers.vue'),
+      },
+      {
+        path: "users/edit/:id",
+        name: "Users-edit",
+        component: () => import('../views/closed/Users/EditUsers.vue'),
+        props: true,
+      },
+      {
+        path: "users/detail/:id",
+        name: "Users-detail",
+        component: () => import('../views/closed/Users/UsersDetail.vue'),
+        props: true,
+      },
 
-      
-  // ]
-  // },
+    
+
+ 
+       {
+         path: "first-dash", name: "first-dash",
+         component: first_dash,
+       },
+ 
+       
+        
+ 
+          
+     ]
+   },
   { path: "/forgot-password", name: "forgotPassword", component: ForgotPassword },
   { path: "/reset/:token", name: "reset", component: Reset, meta: { requiresGuest: true } },
   { path: "/:pathMatch(.*)*", name: "accessDenied", component: AccessDenied, meta: { requiresGuest: true } },
@@ -198,7 +257,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem("token");
+  const isAuthenticated = localStorage.getItem("access");
   const userRole = localStorage.getItem("role");
 
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
