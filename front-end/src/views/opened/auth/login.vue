@@ -97,7 +97,7 @@ export default {
         const response = await this.$apiPost("/auth/login", this.form);
        
    console.log("response",response);
-   
+
         localStorage.setItem("access", response.token);
 
 
@@ -106,6 +106,8 @@ export default {
         this.$refs.toast?.showSuccessToastMessage("Login successful!");
         setTimeout(() => {
           this.$router.push({ path: "/dashboard/first-dash" });
+
+          
         }, 1000);
       } catch (error) {
         this.error = error.response?.data?.message || "Login failed.";

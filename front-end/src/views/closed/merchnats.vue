@@ -18,7 +18,6 @@
 
     <!-- Merchant Grid -->
     <div v-else class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      
       <div v-for="merchant in merchants" :key="merchant.id"
         class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden transition group">
 
@@ -48,16 +47,56 @@
               Merchant ID: {{ merchant.merchantId }}
             </p>
           </div>
+
+          <!-- Edit Button -->
+          <button
+            @click="openEditModal(merchant)"
+            class="mt-4 text-white bg-[#ef7d00] px-4 py-2 rounded-lg hover:bg-[#d66b00] transition"
+          >
+            Edit
+          </button>
         </div>
-
       </div>
-
     </div>
 
     <!-- Empty State -->
     <div v-if="!loading && merchants.length === 0"
       class="text-center text-slate-400 mt-20">
       No merchants available yet.
+    </div>
+
+    <!-- Edit Modal -->
+    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div class="bg-white rounded-2xl max-w-lg w-full p-6 relative">
+        <h2 class="text-2xl font-bold mb-4">Edit Merchant</h2>
+        
+        <form @submit.prevent="saveMerchant">
+          <label class="block text-sm text-slate-600 mt-2">Company Name</label>
+          <input v-model="editableMerchant.companyName" type="text"
+            class="w-full mt-1 p-2 border rounded-lg border-slate-300" required />
+
+          <label class="block text-sm text-slate-600 mt-2">Description</label>
+          <textarea v-model="editableMerchant.description" rows="4"
+            class="w-full mt-1 p-2 border rounded-lg border-slate-300"></textarea>
+
+          <label class="block text-sm text-slate-600 mt-2">Logo URL</label>
+          <input v-model="editableMerchant.logo" type="text"
+            class="w-full mt-1 p-2 border rounded-lg border-slate-300" />
+
+          <div class="flex justify-end mt-6 space-x-3">
+            <button type="button" @click="closeModal"
+              class="px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-100">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-[#003366] text-white rounded-lg hover:bg-[#002244]">
+              Save
+            </button>
+          </div>
+        </form>
+
+        <!-- Close button -->
+        <button @click="closeModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
     </div>
 
   </div>
@@ -67,19 +106,20 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-// Base URL for images (make sure this matches your backend)
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL_LOCAL;
 const BASE_URL_SOURCE = import.meta.env.VITE_APP_BASE_URL_LOCAL_SOURCE;
 
 const merchants = ref([]);
 const loading = ref(false);
 
+// Modal state
+const showModal = ref(false);
+const editableMerchant = ref({});
+
 // Resolve the logo URL
 const resolveLogoUrl = (logoPath) => {
-  if (!logoPath) return ""; // No logo
-  // If the path is already a full URL, return as is
+  if (!logoPath) return ""; 
   if (logoPath.startsWith("http")) return logoPath;
-  // Otherwise, prepend BASE_URL
   return `${BASE_URL_SOURCE}${logoPath}`;
 };
 
@@ -93,6 +133,34 @@ const fetchMerchants = async () => {
     console.error("Failed to fetch merchants:", err);
   } finally {
     loading.value = false;
+  }
+};
+
+// Modal functions
+const openEditModal = (merchant) => {
+  editableMerchant.value = { ...merchant }; // Clone to avoid direct mutation
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
+// Save merchant
+const saveMerchant = async () => {
+  try {
+    const { id, companyName, description, logo } = editableMerchant.value;
+    await axios.put(`${BASE_URL}/merchants/${id}`, {
+      companyName,
+      description,
+      logo
+    });
+    // Update local merchants array
+    const index = merchants.value.findIndex(m => m.id === id);
+    if (index !== -1) merchants.value[index] = { ...editableMerchant.value };
+    closeModal();
+  } catch (err) {
+    console.error("Failed to save merchant:", err);
   }
 };
 
