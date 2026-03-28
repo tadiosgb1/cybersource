@@ -19,7 +19,7 @@
         </div>
         <div class="flex justify-end gap-3 pt-2">
           <button type="button" @click="$emit('close')" class="px-4 py-2 border rounded-lg">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded-lg">Edit</button>
+          <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">Edit</button>
         </div>
       </form>
     </div>

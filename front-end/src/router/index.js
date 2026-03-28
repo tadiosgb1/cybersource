@@ -206,7 +206,7 @@ const routes = [
      path: "/dashboard", name: "dashboard",
      component: dashboard,
      meta:
-       { requiresGuest: true },
+       { requiresAuth: true },
        children: [
       {
         path: "users",

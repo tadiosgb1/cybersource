@@ -32,6 +32,9 @@ export default {
   components: { Loading },
   data() {
     return {
+
+
+      
       item: {},
       loading: false,
     };
@@ -41,7 +44,7 @@ export default {
     const id = this.$route.params.id;
     try {
       const response = await this.$apiGetById('/users', id);
-      this.item = response || {};
+      this.item = response.data || {};
     } catch (error) {
       console.error(error);
     } finally {
