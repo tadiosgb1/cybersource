@@ -33,8 +33,8 @@
 
     <div v-else class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       <div v-for="merchant in filteredMerchants" :key="merchant.id || merchant._id"
-        class="bg-white rounded-3xl border border-slate-100 overflow-hidden transition group hover:shadow-md">
-        
+        class="bg-white rounded-3xl border border-slate-100 overflow-hidden transition group flex flex-col">
+
         <div class="h-48 overflow-hidden relative bg-slate-100 flex items-center justify-center">
           <img 
             v-if="merchant.logo"
@@ -45,19 +45,28 @@
           <span v-else class="text-slate-400 text-sm">No Logo</span>
         </div>
 
-        <div class="p-6 flex flex-col justify-between h-[220px]">
+        <div class="p-6 flex-1 flex flex-col justify-between">
           <div>
             <h2 class="text-xl font-black text-slate-800 mb-2">{{ merchant.companyName }}</h2>
             <p class="text-sm text-slate-500 line-clamp-3">{{ merchant.description }}</p>
             <p class="text-xs text-slate-400 mt-2">ID: {{ merchant.merchantId }}</p>
           </div>
 
-          <button
-            @click="openEditModal(merchant)"
-            class="mt-4 text-white bg-[#ef7d00] px-4 py-2 rounded-lg hover:bg-[#d66b00] transition"
-          >
-            Edit Profile
-          </button>
+          <div class="flex gap-2 mt-4">
+            <button
+              @click="openEditModal(merchant)"
+              class="flex-1 text-white bg-[#ef7d00] px-4 py-2 rounded-lg hover:bg-[#d66b00] transition"
+            >
+              Edit Profile
+            </button>
+
+            <button
+              @click="confirmDelete(merchant)"
+              class="flex-1 text-white bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 transition"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -82,12 +91,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, getCurrentInstance, onMounted } from "vue";
 import AddMerchant from './addMerchant.vue';
 import EditMerchantModal from './EditMerchantModal.vue';
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL_LOCAL;
+const { proxy } = getCurrentInstance(); // to use this.$apiDelete
+
 const BASE_URL_SOURCE = import.meta.env.VITE_APP_BASE_URL_LOCAL_SOURCE;
 
 const merchants = ref([]);
@@ -101,8 +110,8 @@ const selectedMerchant = ref(null);
 const fetchMerchants = async () => {
   loading.value = true;
   try {
-    const res = await axios.get(`${BASE_URL}/merchants`);
-    merchants.value = res.data;
+    const data = await proxy.$apiGet("/merchants");
+    merchants.value = data;
     filterMerchants();
   } catch (err) {
     console.error("Fetch Error:", err);
@@ -135,7 +144,6 @@ const closeEditModal = () => {
 };
 
 const handleMerchantUpdated = () => {
-  // Clear modal first to prevent patching errors
   closeEditModal();
   fetchMerchants();
 };
@@ -145,5 +153,37 @@ const handleMerchantAdded = () => {
   fetchMerchants();
 };
 
+// Delete merchant using this.$apiDelete("/merchants", id)
+const confirmDelete = async (merchant) => {
+  const confirmed = confirm(`Are you sure you want to delete ${merchant.companyName}?`);
+  if (!confirmed) return;
+
+  try {
+    await proxy.$apiDelete("/merchants", merchant.id || merchant._id);
+
+    // Remove deleted merchant from local array
+    // merchants.value = merchants.value.filter(m => m.id !== merchant.id && m._id !== merchant._id);
+    // filterMerchants();
+    proxy.$reloadPage();
+  } catch (err) {
+    console.error("Failed to delete merchant:", err);
+    alert("Failed to delete merchant.");
+  }
+};
+
 onMounted(fetchMerchants);
 </script>
+
+<style scoped>
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.grid > div {
+  display: flex;
+  flex-direction: column;
+}
+</style>

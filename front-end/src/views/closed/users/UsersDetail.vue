@@ -32,9 +32,6 @@ export default {
   components: { Loading },
   data() {
     return {
-
-
-      
       item: {},
       loading: false,
     };
